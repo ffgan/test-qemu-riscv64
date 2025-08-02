@@ -34,7 +34,7 @@ jobs:
               
     - name: start container
       run: |
-        docker run --platform linux/riscv64 -d --name u24 -v ./:/src ubuntu bash -c "while true; do sleep 30; done"
+        docker run --platform linux/riscv64 -d --name u24 -v ./:/src ubuntu:22.04 bash -c "while true; do sleep 30; done"
         
     - name: ls ceph
       run: |
