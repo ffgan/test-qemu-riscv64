@@ -17,69 +17,25 @@ jobs:
     runs-on: ubuntu-22.04
     
     steps:
-    - name: 检出代码
+    - name: checkout code 
       uses: actions/checkout@v4
       
-    - name: 设置QEMU
+    - name: setup qemu
       uses: docker/setup-qemu-action@v3
       with:
         platforms: riscv64
         
-    - name: 设置Docker Buildx
+    - name: setup docker  Buildx
       uses: docker/setup-buildx-action@v3
-      
-    - name: 安装RISC-V交叉编译工具链
+              
+    - name: start container
       run: |
-        sudo apt-get update
-        sudo apt-get install -y gcc-riscv64-linux-gnu g++-riscv64-linux-gnu
-        
-    - name: 验证QEMU安装
+        docker run --platform linux/riscv64 -d --name u24 ubuntu
+    
+    - name: apt update
       run: |
-        docker run --rm --platform linux/riscv64 hello-world
-        docker run --rm --platform linux/riscv64 ubuntu uname -a
-        
-    - name: 编译C程序（交叉编译）
+        docker exec u24 apt-get update
+    - name: install neofetch
       run: |
-        # 示例：编译一个简单的C程序
-        cat > hello.c << 'EOF'
-        #include <stdio.h>
-        int main() {
-            printf("Hello from RISC-V!\n");
-            return 0;
-        }
-        EOF
-        
-        # 使用交叉编译器编译
-        riscv64-linux-gnu-gcc -o hello-riscv hello.c
-        file hello-riscv
-        
-    - name: 在QEMU中运行RISC-V程序
-      run: |
-        # 使用Docker运行RISC-V程序
-        docker run --rm --platform linux/riscv64 -v $(pwd):/workspace ubuntu:22.04 /workspace/hello-riscv
-        
-    - name: 构建Docker镜像（多架构）
-      run: |
-        # 创建一个简单的Dockerfile用于演示
-        cat > Dockerfile << 'EOF'
-        FROM ubuntu:22.04
-        RUN apt-get update && apt-get install -y gcc
-        COPY . /app
-        WORKDIR /app
-        RUN gcc -o hello hello.c
-        CMD ["./hello"]
-        EOF
-        
-        # 构建支持RISC-V的Docker镜像
-        docker buildx build \
-          --platform linux/amd64,linux/riscv64 \
-          --tag my-app:latest \
-          --load .
-          
-    - name: 测试多架构镜像
-      run: |
-        # 测试AMD64版本
-        docker run --rm --platform linux/amd64 my-app:latest
-        
-        # 测试RISC-V版本
-        docker run --rm --platform linux/riscv64 my-app:latest
+        docker exec u24 apt-get install -y neofetch
+        docker exec u24 neofetch
