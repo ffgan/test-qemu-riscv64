@@ -39,14 +39,29 @@ jobs:
     - name: ls ceph
       run: |
         docker exec u24 ls -la /src
-    - name: apt update
+    - name: apt update && apt install 
       run: |
         docker exec u24 apt-get update
+        docker exec u24 apt-get install sudo vim git curl wget python3-dev build-essential
+
+    - name: install dep
+      run: | 
+        docker exec u24 FOR_MAKE_CHECK=true  ./install-deps.sh
+
+
     - name: install neofetch
       run: |
         docker exec u24 apt-get install -y neofetch
         docker exec u24 neofetch
     
+
+
+
+  
+
+
+
+        
     - name: post clean
       run: |
         docker stop u24
