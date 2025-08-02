@@ -39,18 +39,19 @@ jobs:
     - name: ls ceph
       run: |
         docker exec u22 ls -la /src
-    - name: apt update && apt install 
-      run: |
-        docker exec u22 apt-get update
-        docker exec u22 apt-get install -y sudo vim git curl wget python3-dev build-essential
-
+  
     - name: Show uname info
       run: |
         docker exec u22 uname -a
-        docker exec u22 cat /etc/os-releaseneofetch
-    - name: install neofetch
+        docker exec u22 cat /etc/os-release
+
+    - name: apt update && apt install 
       run: |
-        docker exec u22 apt-get install -y neofetch
+        docker exec u22 apt-get update
+        docker exec u22 apt-get install -y sudo vim git curl wget python3-dev build-essential neofetch
+
+    - name: neofetch
+      run: |
         docker exec u22 neofetch
 
     - name: install dep
