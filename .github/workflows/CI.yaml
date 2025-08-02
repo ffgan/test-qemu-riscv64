@@ -1,4 +1,4 @@
-name: RISC-V C程序构建
+name: test qemu
 on:
   push:
     paths:
@@ -39,3 +39,9 @@ jobs:
       run: |
         docker exec u24 apt-get install -y neofetch
         docker exec u24 neofetch
+    - name: post clean
+      run: |
+        docker stop u24
+        docker rm u24
+        docker rmi ubuntu
+    
