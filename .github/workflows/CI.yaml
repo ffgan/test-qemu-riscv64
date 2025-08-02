@@ -42,7 +42,6 @@ jobs:
     - name: apt update
       run: |
         docker exec u24 apt-get update
-        docker exec 
     - name: install neofetch
       run: |
         docker exec u24 apt-get install -y neofetch
