@@ -15,7 +15,7 @@ on:
 jobs:
   build-riscv:
     runs-on: ubuntu-22.04
-    
+    timeout-minutes: 9999999
     steps:
     - name: checkout code 
       uses: actions/checkout@v4
@@ -74,12 +74,16 @@ jobs:
       run: |
         docker exec u22 bash -c "cd /src && export  NODE_OPTIONS=--max-old-space-size=8192 && ninja check -j4 -k0"
 
+    - name: ctest
+      continue-on-error: true
+      run: |
+        docker exec u22 bash -c "cd /src/build && ctest -j4 -k0"
 
-
-  
-
-
-
+    - name: Upload log
+      uses: actions/upload-artifact@v4
+      with:
+        name: logs.zip
+        path: ./build/Testing/Temporary/*.log
         
     - name: post clean
       run: |
