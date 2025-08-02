@@ -46,7 +46,7 @@ jobs:
 
     - name: install dep
       run: | 
-        docker exec u24 "FOR_MAKE_CHECK=true ./install-deps.sh"
+        docker exec u24 bash -c "FOR_MAKE_CHECK=true ./install-deps.sh"
 
 
     - name: install neofetch
