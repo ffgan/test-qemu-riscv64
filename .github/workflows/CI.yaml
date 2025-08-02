@@ -30,7 +30,7 @@ jobs:
               
     - name: start container
       run: |
-        docker run --platform linux/riscv64 -d --name u24 ubuntu
+        docker run --platform linux/riscv64 -d --name u24 ubuntu bash -c "while true; do sleep 30; done"
     
     - name: apt update
       run: |
