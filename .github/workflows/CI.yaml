@@ -19,6 +19,9 @@ jobs:
     steps:
     - name: checkout code 
       uses: actions/checkout@v4
+      with:
+          repository: ffgan/ceph
+          path: feature/allow_riscv64_compile
       
     - name: setup qemu
       uses: docker/setup-qemu-action@v3
@@ -30,7 +33,7 @@ jobs:
               
     - name: start container
       run: |
-        docker run --platform linux/riscv64 -d --name u24 ubuntu bash -c "while true; do sleep 30; done"
+        docker run --platform linux/riscv64 -d --name u24 -v ./ceph:/src ubuntu bash -c "while true; do sleep 30; done"
     
     - name: apt update
       run: |
@@ -39,6 +42,10 @@ jobs:
       run: |
         docker exec u24 apt-get install -y neofetch
         docker exec u24 neofetch
+    
+    - name: ls ceph
+      run: |
+        docker exec u24 ls -la /src
     - name: post clean
       run: |
         docker stop u24
