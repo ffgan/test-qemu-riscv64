@@ -36,6 +36,7 @@ jobs:
     - name: 验证QEMU安装
       run: |
         docker run --rm --platform linux/riscv64 hello-world
+        docker run --rm --platform linux/riscv64 ubuntu uname -a
         
     - name: 编译C程序（交叉编译）
       run: |
