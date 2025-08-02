@@ -34,26 +34,44 @@ jobs:
               
     - name: start container
       run: |
-        docker run --platform linux/riscv64 -d --name u24 -v ./:/src ubuntu:22.04 bash -c "while true; do sleep 30; done"
+        docker run --platform linux/riscv64 -d --name u22 -v ./:/src ubuntu:22.04 bash -c "while true; do sleep 30; done"
         
     - name: ls ceph
       run: |
-        docker exec u24 ls -la /src
+        docker exec u22 ls -la /src
     - name: apt update && apt install 
       run: |
-        docker exec u24 apt-get update
-        docker exec u24 apt-get install -y sudo vim git curl wget python3-dev build-essential
+        docker exec u22 apt-get update
+        docker exec u22 apt-get install -y sudo vim git curl wget python3-dev build-essential
+
+    - name: Show uname info
+      run: |
+        docker exec u22 uname -a
+        docker exec u22 cat /etc/os-releaseneofetch
+    - name: install neofetch
+      run: |
+        docker exec u22 apt-get install -y neofetch
+        docker exec u22 neofetch
 
     - name: install dep
       run: | 
-        docker exec u24 bash -c "cd /src && git config --global safe.directory '*' && FOR_MAKE_CHECK=true ./install-deps.sh"
+        docker exec u22 bash -c "cd /src && git config --global safe.directory '*' && FOR_MAKE_CHECK=true ./install-deps.sh"
 
-
-    - name: install neofetch
-      run: |
-        docker exec u24 apt-get install -y neofetch
-        docker exec u24 neofetch
+    - name: do_cmake
     
+      run: | 
+        docker exec u22 bash -c "cd /src && export NODE_OPTIONS=--max-old-space-size=16384 && rm -rf build;ARGS='-DWITH_MGR_DASHBOARD_FRONTEND=OFF' ./do_cmake.sh"
+
+
+    - name: ninja build
+      continue-on-error: true
+      run: |
+        docker exec u22 bash -c "cd /src && export  NODE_OPTIONS=--max-old-space-size=8192 && ninja -j4 -k0"
+
+    - name: ninja check
+      continue-on-error: true
+      run: |
+        docker exec u22 bash -c "cd /src && export  NODE_OPTIONS=--max-old-space-size=8192 && ninja check -j4 -k0"
 
 
 
@@ -64,7 +82,7 @@ jobs:
         
     - name: post clean
       run: |
-        docker stop u24
-        docker rm u24
+        docker stop u22
+        docker rm u22
         docker rmi ubuntu
     
