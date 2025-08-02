@@ -1,11 +1,5 @@
 name: RISC-V C程序构建
 
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-
 jobs:
   build-riscv:
     runs-on: ubuntu-latest
